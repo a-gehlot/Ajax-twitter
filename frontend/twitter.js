@@ -3,9 +3,9 @@ const UsersSearch = require('./users_search');
 
 $(document).ready(function() {
     $("button.follow-toggle").each(function(idx, element) {
-        new FollowToggle($(element));
+        new FollowToggle(element);
     })
     $("nav.users-search").each(function(idx, element) {
-        new UsersSearch($(element));
+        new UsersSearch(element);
     })
 })

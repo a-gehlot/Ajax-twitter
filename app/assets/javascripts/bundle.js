@@ -47,10 +47,10 @@ module.exports = APIUtil;
 const APIUtil = __webpack_require__(/*! ./api_util */ "./frontend/api_util.js");
 
 class FollowToggle {
-    constructor($el) {
-        this.$el = $el;
-        this.userID = $el.data('user-id');
-        this.followState = $el.data('follow-state')
+    constructor(el, options) {
+        this.$el = $(el);
+        this.userID = this.$el.data('user-id') || options.userId;
+        this.followState = this.$el.data('follow-state') || options.followState;
         this.render();
         this.$el.click(this.handleClick.bind(this))
     }
@@ -109,12 +109,13 @@ module.exports = FollowToggle;
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 const APIUtil = __webpack_require__(/*! ./api_util */ "./frontend/api_util.js");
+const FollowToggle = __webpack_require__(/*! ./follow_toggle */ "./frontend/follow_toggle.js");
 
 class UsersSearch {
-    constructor($el) {
-        this.$el = $el;
-        this.$input = $el.find("input")
-        this.$ul = $el.find("ul")
+    constructor(el) {
+        this.$el = $(el);
+        this.$input = this.$el.find("input")
+        this.$ul = this.$el.find("ul")
         this.$input.on("input", this.handleInput.bind(this));
     }
 
@@ -128,8 +129,14 @@ class UsersSearch {
         let userTable = this.$el.find('ul.users');
         userTable.empty();
         data.forEach((user) => {
-            let userAnchor = (`<li><a href=${user.id}>${user.username}</a></li>`)
-            userTable.append(userAnchor)
+            let userAnchor = $(`<li><a href=${user.id}>${user.username}</a></li>`)
+            let button = $('<button></button>')
+            new FollowToggle(button, {
+                userId: user.id,
+                followState: user.followed ? 'followed' : 'unfollowed',
+            });
+            userTable.append(userAnchor);
+            userTable.append(button);
         })
     }
 }
@@ -176,10 +183,10 @@ const UsersSearch = __webpack_require__(/*! ./users_search */ "./frontend/users_
 
 $(document).ready(function() {
     $("button.follow-toggle").each(function(idx, element) {
-        new FollowToggle($(element));
+        new FollowToggle(element);
     })
     $("nav.users-search").each(function(idx, element) {
-        new UsersSearch($(element));
+        new UsersSearch(element);
     })
 })
 })();
