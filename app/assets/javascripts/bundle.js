@@ -22,6 +22,15 @@ const APIUtil = {
             url: `/users/${id}/follow`,
             dataType: "json",
         }));
+    },
+
+    searchUsers: (query) => {
+        return ($.ajax({
+            type: "GET",
+            url: "/users/search",
+            dataType: "json",
+            data: { query },
+        }));
     }
 }
 
@@ -91,6 +100,42 @@ class FollowToggle {
 
 module.exports = FollowToggle;
 
+/***/ }),
+
+/***/ "./frontend/users_search.js":
+/*!**********************************!*\
+  !*** ./frontend/users_search.js ***!
+  \**********************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+const APIUtil = __webpack_require__(/*! ./api_util */ "./frontend/api_util.js");
+
+class UsersSearch {
+    constructor($el) {
+        this.$el = $el;
+        this.input = $el.find("input")
+        this.ul = $el.find("ul")
+        this.input.on("input", this.handleInput.bind(this));
+    }
+
+    handleInput() {
+        if (this.input.val() === '') {
+            this.renderData(['']);
+            return;
+        }
+        APIUtil.searchUsers(this.input.val()).then((value) => {
+            console.log(value);
+        })
+    }
+
+    renderData(data) {
+        this.ul.empty();
+        this.ul.append(data);
+    }
+}
+
+module.exports = UsersSearch;
+
 /***/ })
 
 /******/ 	});
@@ -127,10 +172,14 @@ var __webpack_exports__ = {};
   !*** ./frontend/twitter.js ***!
   \*****************************/
 const FollowToggle = __webpack_require__(/*! ./follow_toggle */ "./frontend/follow_toggle.js");
+const UsersSearch = __webpack_require__(/*! ./users_search */ "./frontend/users_search.js");
 
 $(document).ready(function() {
     $("button.follow-toggle").each(function(idx, element) {
         new FollowToggle($(element));
+    })
+    $("nav.users-search").each(function(idx, element) {
+        new UsersSearch($(element));
     })
 })
 })();
