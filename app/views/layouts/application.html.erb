@@ -9,10 +9,11 @@
   </head>
 
   <body>
-    <ul>
-      <li><a href="<%= feed_url %>">Feed</a></li>
-      <li><a href="<%= search_users_url %>">User Search</a></li>
-    </ul>
+    <header>
+      <h1 class="logo">Twitter Clone</h1>
+        <a href="<%= feed_url %>">Feed</a>
+        <a href="<%= search_users_url %>">User Search</a>
+    </header>
 
     <% if current_user %>
       <form action="/session" method="POST">
