@@ -31,6 +31,15 @@ const APIUtil = {
             dataType: "json",
             data: { query },
         }));
+    },
+
+    createTweet: (data) => {
+        return ($.ajax({
+            type: "POST",
+            url: "/tweets",
+            dataType: "json",
+            data: data
+        }));
     }
 }
 
@@ -99,6 +108,37 @@ class FollowToggle {
 }
 
 module.exports = FollowToggle;
+
+/***/ }),
+
+/***/ "./frontend/tweet_compose.js":
+/*!***********************************!*\
+  !*** ./frontend/tweet_compose.js ***!
+  \***********************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+const APIUtil = __webpack_require__(/*! ./api_util */ "./frontend/api_util.js");
+
+class TweetCompose {
+    constructor (el) {
+        this.$el = $(el);
+        this.$el.submit(this.submit.bind(this))
+    }
+
+    submit(event) {
+        event.preventDefault();
+        let data = this.$el.serializeJSON()
+        this.clearInput();
+        this.$el.find(":input").prop("disabled", true);
+        APIUtil.createTweet(data);
+    }
+
+    clearInput() {
+        this.$el.find('[name^=tweet]').val('');
+    }
+}
+
+module.exports = TweetCompose;
 
 /***/ }),
 
@@ -180,6 +220,7 @@ var __webpack_exports__ = {};
   \*****************************/
 const FollowToggle = __webpack_require__(/*! ./follow_toggle */ "./frontend/follow_toggle.js");
 const UsersSearch = __webpack_require__(/*! ./users_search */ "./frontend/users_search.js");
+const TweetCompose = __webpack_require__(/*! ./tweet_compose */ "./frontend/tweet_compose.js")
 
 $(document).ready(function() {
     $("button.follow-toggle").each(function(idx, element) {
@@ -187,6 +228,9 @@ $(document).ready(function() {
     })
     $("nav.users-search").each(function(idx, element) {
         new UsersSearch(element);
+    })
+    $("form.tweet-compose").each(function(idx, element) {
+        new TweetCompose(element);
     })
 })
 })();
