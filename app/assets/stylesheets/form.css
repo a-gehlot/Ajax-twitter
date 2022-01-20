@@ -1,0 +1,12 @@
+form {
+    
+}
+
+form strong {
+  display: block;
+}
+
+form textarea {
+    padding: 5px;
+    resize: none;
+}

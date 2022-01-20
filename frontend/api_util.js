@@ -31,6 +31,15 @@ const APIUtil = {
             dataType: "json",
             data: data
         }));
+    },
+
+    addUserMentions: (data) => {
+        return ($.ajax({
+            type: "GET",
+            url: "/users",
+            dataType: "json",
+            data: { data }
+        }))
     }
 }
 

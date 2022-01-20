@@ -45,6 +45,16 @@ class UsersController < ApplicationController
     end
   end
 
+  def index
+    @users = User.select('id, username')
+    puts @users
+    respond_to do |format|
+      format.json {
+        render json: @users
+      }
+    end
+  end
+
   protected
   def user_params
     self.params.require(:user).permit(:username, :password)

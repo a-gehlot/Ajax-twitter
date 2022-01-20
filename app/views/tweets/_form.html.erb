@@ -1,4 +1,5 @@
 <h2>New Tweet!</h2>
+
 <form class="tweet-compose" action="/tweets" method="POST" data-tweets-ul="#feed">
   <strong class="chars-left">140 characters remaining</strong>
   <input
@@ -14,12 +15,7 @@
 
   <label>
     Mention
-    <select name="tweet[mentioned_user_ids][]">
-      <option></option>
-      <% User.all.each do |user| %>
-        <option value="<%= user.id %>"><%= user.username %></option>
-      <% end %>
-    </select>
+    <button class="add_mention">Add Mention</button>
   </label>
   <br>
 
