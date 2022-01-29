@@ -169,6 +169,7 @@ class TweetCompose {
 
     clearInput() {
         this.$el.find('[name^=tweet]').val('');
+        this.$el.find('.mentions').remove();
     }
 
     handleSuccess(tweet) {
