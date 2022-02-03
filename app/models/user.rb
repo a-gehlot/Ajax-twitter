@@ -52,13 +52,16 @@ class User < ApplicationRecord
     self.save!
   end
 
-  def feed_tweets(limit = nil, max_created_at = nil)
+  def feed_tweets(limit = nil, max_created_at = Float::INFINITY)
     @tweets = Tweet
       .joins(:user)
       .joins('LEFT OUTER JOIN follows ON users.id = follows.followee_id')
       .where('tweets.user_id = :id OR follows.follower_id = :id', id: self.id)
       .order('tweets.created_at DESC')
       .distinct
+      .limit(limit)
+      .where(created_at: max_created_at..Float::INFINITY);
+
 
     # TODO: How can we use limit/max_created_at here??
 
