@@ -40,6 +40,15 @@ const APIUtil = {
             dataType: "json",
             data: { data }
         }))
+    },
+
+    feedRequest: (data) => {
+        return ($.ajax({
+            type: "GET",
+            url: "/feed",
+            dataType: "json",
+            data: data
+        }))
     }
 }
 

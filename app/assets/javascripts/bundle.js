@@ -49,6 +49,15 @@ const APIUtil = {
             dataType: "json",
             data: { data }
         }))
+    },
+
+    feedRequest: (data) => {
+        return ($.ajax({
+            type: "GET",
+            url: "/feed",
+            dataType: "json",
+            data: data
+        }))
     }
 }
 
@@ -120,6 +129,67 @@ module.exports = FollowToggle;
 
 /***/ }),
 
+/***/ "./frontend/helper_functions.js":
+/*!**************************************!*\
+  !*** ./frontend/helper_functions.js ***!
+  \**************************************/
+/***/ ((module) => {
+
+tweetFormatting = (tweet) => {
+    let $formattedTweet = $('<li></li>')
+    $formattedTweet.append(`${tweet.content}
+        -- <a href="/users/${tweet.user.id}">${tweet.user.username}</a>
+        -- ${tweet.created_at}`)
+    if (tweet.mentions.length > 0) {
+        $formattedTweet.append('<ul></ul>');
+        tweet.mentions.forEach((mentioned_user) => {
+            $formattedTweet.find('ul').append(`<li><a href='/users/${mentioned_user.user_id}'>${mentioned_user.user.username}</a>`)
+        })
+    }
+    return $formattedTweet;
+}
+
+module.exports = {
+    tweetFormatting: tweetFormatting
+}
+
+/***/ }),
+
+/***/ "./frontend/infinite_tweets.js":
+/*!*************************************!*\
+  !*** ./frontend/infinite_tweets.js ***!
+  \*************************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+const APIUtil = __webpack_require__(/*! ./api_util */ "./frontend/api_util.js");
+const { tweetFormatting } = __webpack_require__(/*! ./helper_functions */ "./frontend/helper_functions.js");
+
+class InfiniteTweets {
+    constructor(el) {
+        this.$el = $(el);
+        this.$el.find('.fetch-more').on('click', this.fetchTweets.bind(this));
+    }
+
+    fetchTweets(event) {
+        event.preventDefault();
+        APIUtil.feedRequest().then((data) => this.insertTweets(data));
+    }
+
+    insertTweets(data) {
+
+        let ul = this.$el.find("#feed");
+
+        data.forEach((tweet) => {
+            let $formattedTweet = tweetFormatting(tweet);
+            $(ul).append($formattedTweet);
+        })
+    }
+}
+
+module.exports = InfiniteTweets;
+
+/***/ }),
+
 /***/ "./frontend/tweet_compose.js":
 /*!***********************************!*\
   !*** ./frontend/tweet_compose.js ***!
@@ -127,6 +197,7 @@ module.exports = FollowToggle;
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 const APIUtil = __webpack_require__(/*! ./api_util */ "./frontend/api_util.js");
+const { tweetFormatting } = __webpack_require__(/*! ./helper_functions */ "./frontend/helper_functions.js")
 
 class TweetCompose {
     constructor (el) {
@@ -175,16 +246,17 @@ class TweetCompose {
         this.clearInput();
         this.$el.find(":input").prop("disabled", false);
         let ul = this.$el.data("tweets-ul");
-        let $formattedTweet = $('<li></li>')
-        $formattedTweet.append(`${tweet.content}
-        -- <a href="/users/${tweet.user.id}">${tweet.user.username}</a>
-        -- ${tweet.created_at}`)
-        if (tweet.mentions.length > 0) {
-            $formattedTweet.append('<ul></ul>');
-            tweet.mentions.forEach((mentioned_user) => {
-                $formattedTweet.find('ul').append(`<li><a href='/users/${mentioned_user.user_id}'>${mentioned_user.user.username}</a>`)
-            })
-        }
+        // let $formattedTweet = $('<li></li>')
+        // $formattedTweet.append(`${tweet.content}
+        // -- <a href="/users/${tweet.user.id}">${tweet.user.username}</a>
+        // -- ${tweet.created_at}`)
+        // if (tweet.mentions.length > 0) {
+        //     $formattedTweet.append('<ul></ul>');
+        //     tweet.mentions.forEach((mentioned_user) => {
+        //         $formattedTweet.find('ul').append(`<li><a href='/users/${mentioned_user.user_id}'>${mentioned_user.user.username}</a>`)
+        //     })
+        // }
+        let $formattedTweet = tweetFormatting(tweet)
         $(ul).prepend($formattedTweet);
     }
 
@@ -283,7 +355,8 @@ var __webpack_exports__ = {};
   \*****************************/
 const FollowToggle = __webpack_require__(/*! ./follow_toggle */ "./frontend/follow_toggle.js");
 const UsersSearch = __webpack_require__(/*! ./users_search */ "./frontend/users_search.js");
-const TweetCompose = __webpack_require__(/*! ./tweet_compose */ "./frontend/tweet_compose.js")
+const TweetCompose = __webpack_require__(/*! ./tweet_compose */ "./frontend/tweet_compose.js");
+const InfiniteTweets = __webpack_require__(/*! ./infinite_tweets */ "./frontend/infinite_tweets.js")
 
 $(document).ready(function() {
     $("button.follow-toggle").each(function(idx, element) {
@@ -294,6 +367,9 @@ $(document).ready(function() {
     })
     $("form.tweet-compose").each(function(idx, element) {
         new TweetCompose(element);
+    })
+    $("div.infinite-tweets").each(function(idx, element) {
+        new InfiniteTweets(element);
     })
 })
 })();
