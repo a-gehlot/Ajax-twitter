@@ -38,7 +38,7 @@ const APIUtil = {
             type: "GET",
             url: "/users",
             dataType: "json",
-            data: { data }
+            data: data
         }))
     },
 
