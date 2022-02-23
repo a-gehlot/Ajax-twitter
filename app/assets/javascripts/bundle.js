@@ -169,8 +169,10 @@ class InfiniteTweets {
 
         this.$el = $(el);
         this.$el.find('.fetch-more').on('click', this.fetchTweets.bind(this));
+        this.$el.on('insert-tweet', this.insertTweet.bind(this))
         this.fetchTweets();
         this.maxCreatedAt = null;
+
     }
 
     fetchTweets(event) {
@@ -196,6 +198,11 @@ class InfiniteTweets {
         }
         let lastTweet = data.slice(-1)[0]
         this.maxCreatedAt = $(lastTweet).attr('created_at');
+    }
+
+    insertTweet(event, data) {
+        let $formattedTweet = tweetFormatting(data)
+        this.$el.find('#feed').prepend($formattedTweet);
     }
 
     noMoreTweets() {
@@ -263,9 +270,8 @@ class TweetCompose {
     handleSuccess(tweet) {
         this.clearInput();
         this.$el.find(":input").prop("disabled", false);
-        let ul = this.$el.data("tweets-ul");
-        let $formattedTweet = tweetFormatting(tweet)
-        $(ul).prepend($formattedTweet);
+        let feed = this.$el.data('tweets-ul');
+        $(feed).trigger('insert-tweet', tweet)
     }
 
     updateChars() {

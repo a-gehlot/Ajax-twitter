@@ -47,9 +47,8 @@ class TweetCompose {
     handleSuccess(tweet) {
         this.clearInput();
         this.$el.find(":input").prop("disabled", false);
-        let ul = this.$el.data("tweets-ul");
-        let $formattedTweet = tweetFormatting(tweet)
-        $(ul).prepend($formattedTweet);
+        let feed = this.$el.data('tweets-ul');
+        $(feed).trigger('insert-tweet', tweet)
     }
 
     updateChars() {

@@ -6,8 +6,10 @@ class InfiniteTweets {
 
         this.$el = $(el);
         this.$el.find('.fetch-more').on('click', this.fetchTweets.bind(this));
+        this.$el.on('insert-tweet', this.insertTweet.bind(this))
         this.fetchTweets();
         this.maxCreatedAt = null;
+
     }
 
     fetchTweets(event) {
@@ -33,6 +35,11 @@ class InfiniteTweets {
         }
         let lastTweet = data.slice(-1)[0]
         this.maxCreatedAt = $(lastTweet).attr('created_at');
+    }
+
+    insertTweet(event, data) {
+        let $formattedTweet = tweetFormatting(data)
+        this.$el.find('#feed').prepend($formattedTweet);
     }
 
     noMoreTweets() {
