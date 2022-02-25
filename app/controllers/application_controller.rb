@@ -1,7 +1,7 @@
 class ApplicationController < ActionController::Base
-  protect_from_forgery with: :exception
 
   helper_method :current_user
+  protect_from_forgery with: :null_session
   
   def current_user
     # fetches the user we've logged in as

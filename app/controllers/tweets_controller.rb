@@ -1,5 +1,6 @@
 class TweetsController < ApplicationController
-  before_action :require_logged_in!
+  before_action :require_logged_in!, except: :index
+  
 
   def create
     # simulate latency
@@ -16,6 +17,11 @@ class TweetsController < ApplicationController
       # Lazy: even respond with JSON to invalid HTML request.
       render json: @tweet.errors.full_messages, status: 422
     end
+  end
+
+  def index
+    @tweets = Tweet.all
+    render :index
   end
 
   private

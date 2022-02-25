@@ -1,6 +1,9 @@
 class UsersController < ApplicationController
   before_action :require_not_logged_in!, only: [:create, :new]
   before_action :require_logged_in!, only: [:show]
+  skip_before_action :verify_authenticity_token
+
+
 
   def create
     # sign up the user
@@ -29,7 +32,10 @@ class UsersController < ApplicationController
     end
 
     @user = User.includes(tweets: :mentioned_users).find(params[:id])
-    render :show
+    respond_to do |format|
+      format.html { render :show }
+      format.json { render :show }
+    end
   end
 
   def search
