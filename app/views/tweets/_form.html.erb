@@ -1,20 +1,17 @@
-<h2>New Tweet!</h2>
-
 <form class="tweet-compose" action="/tweets" method="POST" data-tweets-ul="#feed">
-  <strong class="chars-left">140 characters remaining</strong>
   <input
       type="hidden"
       name="authenticity_token"
       value="<%= form_authenticity_token %>">
 
   <label>
-    Content
-    <textarea name="tweet[content]"></textarea>
+    <textarea name="tweet[content]" placeholder="What's on your mind"></textarea>
   </label>
+  <strong class="chars-left">140 characters remaining</strong>
+
   <br>
 
   <label>
-    Mention
     <button class="add_mention">Add Mention</button>
   </label>
   <ul class="new-mentions"></ul>
