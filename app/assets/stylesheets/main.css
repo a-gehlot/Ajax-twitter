@@ -68,8 +68,14 @@ header {
   border-bottom: 3px solid darkblue;
 }
 
-input {
+.logout {
   display: inline;
   background-color: transparent;
   border: none;
 }
+
+a {
+  all: unset;
+  cursor: pointer;
+}
+
